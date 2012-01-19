@@ -239,9 +239,40 @@
 			Runs the Selenium tests
 		=================================
 	-->
-	<target name="testing.selenium" depends="init">
-		<echo>acceptance testing</echo>	
+	<target name="testing.selenium" depends="testing.selenium.start">
+			<echo>acceptance testing</echo>	
 	</target>
+		
+	
+	<target name="testing.selenium.start" depends="init">
+		<echo>Starting Selenium Server</echo>	
+		 <java jar="lib/selenium-server-standalone-2.17.0.jar" fork="true">
+		        <arg line="-htmlSuite &quot;${firefox}&quot;"/>
+		        <arg line="&quot;${baseURL}&quot;"/>
+		        <arg line="&quot;${acceptanceTestListDir}/testSuite.html&quot;"/>
+		        <arg line="&quot;${acceptanceTestReportDir}/results.html&quot;"/>
+		        <arg line="-timeout 30"/>
+		    </java>
+	</target>
+	
+	<target name="testing.selenium.run" depends="testing.selenium.start">
+			<echo>Running Selenium Tests</echo>	
+		</target>
+	
+	<target name="testing.selenium.stop">
+		<echo taskname="testing.selenium.stop" message="Stopping Selenium Server: DGF Errors during shutdown are expected" />
+		<get taskname="selenium-shutdown" 
+			src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer"
+			dest="result.txt" ignoreerrors="true" />
+	</target>
+	
+	
+		
+
+
+    
+	
+	
 	
 	<!--
 		=================================
